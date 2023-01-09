@@ -13,12 +13,12 @@ public class PaymentResponseMessageListenerImpl implements
         PaymentResponseMessageListener {
 
     @Override
-    public void PaymentCompleted(PaymentResponse paymentResponse) {
+    public void paymentCompleted(PaymentResponse paymentResponse) {
 
     }
 
     @Override
-    public void PaymentCancelled(PaymentResponse paymentResponse) {
+    public void paymentCancelled(PaymentResponse paymentResponse) {
 
     }
 }

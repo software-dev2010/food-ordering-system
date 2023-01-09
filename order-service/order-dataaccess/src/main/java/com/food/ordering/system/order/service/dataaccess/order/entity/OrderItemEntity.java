@@ -24,7 +24,7 @@ public class OrderItemEntity {
     private Long id;
 
     @Id
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "ORDER_ID")
     private OrderEntity order;
 
