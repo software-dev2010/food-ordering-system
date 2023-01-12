@@ -17,6 +17,7 @@
         <module>restaurant-service/restaurant-messaging</module>
         <module>restaurant-service/restaurant-domain/restaurant-domain-core</module>
         <module>restaurant-service/restaurant-domain/restaurant-application-service</module>
+        <module>infrastructure/saga</module>
     </modules>
 
     <parent>
@@ -42,6 +43,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.food.ordering.system</groupId>
+                <artifactId>saga</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.food.ordering.system</groupId>
                 <artifactId>order-domain-core</artifactId>
