@@ -59,11 +59,11 @@ public class PaymentDomainServiceImpl implements PaymentDomainService {
 
     private void validateCreditEntry(
             Payment payment, CreditEntry creditEntry, List<String> failureMessages) {
-        log.error("Customer with id = {} doesn't have enough credit for payment!",
-                payment.getCustomerId().getValue());
         if (payment.getPrice().isGreaterThan(creditEntry.getTotalCreditAmount())) {
+            log.error("Customer with id = {} doesn't have enough credit for payment!",
+                    payment.getCustomerId().getValue());
             failureMessages.add("Customer with id = " + payment.getCustomerId().getValue()
-                    + "doesn't have enough credit for payment!");
+                    + " doesn't have enough credit for payment!");
         }
     }
 
@@ -96,10 +96,10 @@ public class PaymentDomainServiceImpl implements PaymentDomainService {
             log.error("Customer with id = {} doesn't' have enough credit according to credit history!",
                     creditEntry.getCustomerId().getValue());
             failureMessages.add("Customer with id = " + creditEntry.getCustomerId().getValue()
-                    + "doesn't' have enough credit according to credit history!");
+                    + " doesn't' have enough credit according to credit history!");
         }
 
-        if (creditEntry.getTotalCreditAmount().equals(
+        if (!creditEntry.getTotalCreditAmount().equals(
                 totalCreditHistory.subtract(totalDebitHistory))) {
             log.error("Credit history total is not equal to current credit for customer id: {}!",
                     creditEntry.getCustomerId().getValue());

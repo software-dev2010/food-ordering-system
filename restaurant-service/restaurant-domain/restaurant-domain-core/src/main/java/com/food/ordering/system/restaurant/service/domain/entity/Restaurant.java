@@ -35,7 +35,7 @@ public class Restaurant extends AggregateRoot<RestaurantId> {
     }
 
     public void constructOrderApproval(OrderApprovalStatus orderApprovalStatus) {
-        OrderApproval.Builder.builder()
+        this.orderApproval = OrderApproval.Builder.builder()
                 .orderApprovalId(new OrderApprovalId(UUID.randomUUID()))
                 .restaurantId(this.getId())
                 .orderId(this.orderDetail.getId())

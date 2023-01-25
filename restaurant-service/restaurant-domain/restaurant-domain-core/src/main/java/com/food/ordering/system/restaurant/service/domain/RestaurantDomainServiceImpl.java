@@ -30,7 +30,9 @@ public class RestaurantDomainServiceImpl implements RestaurantDomainService {
         if (failureMessages.isEmpty()) {
             log.info("Order is approved for order id: {}",
                     restaurant.getOrderDetail().getId().getValue());
+
             restaurant.constructOrderApproval(OrderApprovalStatus.APPROVED);
+
             return new OrderApprovedEvent(
                     restaurant.getOrderApproval(),
                     restaurant.getId(),
