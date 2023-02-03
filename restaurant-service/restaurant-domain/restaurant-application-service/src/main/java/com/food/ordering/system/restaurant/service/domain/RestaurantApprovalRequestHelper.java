@@ -25,9 +25,7 @@ public class RestaurantApprovalRequestHelper {
     private final RestaurantDomainService restaurantDomainService;
     private final RestaurantDataMapper restaurantDataMapper;
     private final RestaurantRepository restaurantRepository;
-    private final OrderApprovalRepository orderApprovalRepository;
-    private final OrderApprovedMessagePublisher orderApprovedMessagePublisher;
-    private final OrderRejectedMessagePublisher orderRejectedMessagePublisher;
+    private final OrderApprovalRepository orderApprovalRepository;;
 
     @Transactional
     public OrderApprovalEvent persistOrderApproval(
@@ -40,10 +38,7 @@ public class RestaurantApprovalRequestHelper {
         Restaurant restaurant = findRestaurant(restaurantApprovalRequest);
         OrderApprovalEvent orderApprovalEvent =
                 restaurantDomainService.validateOrder(
-                        restaurant,
-                        failureMessages,
-                        orderApprovedMessagePublisher,
-                        orderRejectedMessagePublisher);
+                        restaurant, failureMessages);
 
         orderApprovalRepository.save(restaurant.getOrderApproval());
         return orderApprovalEvent;
