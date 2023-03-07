@@ -12,11 +12,14 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "order_customer_m_view", schema = "customer")  // I will use a materialized view from the customer db
+//@Table(name = "order_customer_m_view", schema = "customer")  // I will use a materialized view from the customer db
+@Table(name = "customers")
 @Entity
 public class CustomerEntity {
-    // I use this entity just to check if the customer exists or not
 
     @Id
     private UUID id;
+    private String username;
+    private String firstName;
+    private String lastName;
 }

@@ -35,7 +35,7 @@ public class PaymentOutboxRepositoryImpl implements PaymentOutboxRepository {
     @Override
     public Optional<List<OrderPaymentOutboxMessage>> findByTypeAndOutboxStatusAndSagaStatus(
             String sagaType, OutboxStatus outboxStatus, SagaStatus... sagaStatus) {
-        return Optional.of(paymentOutboxJpaRepository.findByTypeAndOutboxStatusAndSagaStatus(
+        return Optional.of(paymentOutboxJpaRepository.findByTypeAndOutboxStatusAndSagaStatusIn(
                         sagaType, outboxStatus, Arrays.asList(sagaStatus))
                 .orElseThrow(() -> new PaymentOutboxNotFoundException("Payment outbox object" +
                         " could not be found for saga type " + sagaType))

@@ -28,15 +28,11 @@ public class OrderCreateHelper {
     private final RestaurantRepository restaurantRepository;
     private final OrderDataMapper orderDataMapper;
 
-//    private final OrderCreatedPaymentRequestMessagePublisher orderCreatedPaymentRequestMessagePublisher;
-
     @Transactional
     public OrderCreatedEvent persistOrder(CreateOrderCommand createOrderCommand) {
         checkCustomer(createOrderCommand.getCustomerId());
         Restaurant restaurant = checkRestaurant(createOrderCommand);
         Order order = orderDataMapper.createOrderCommandToOrder(createOrderCommand);
-//        OrderCreatedEvent orderCreatedEvent = orderDomainService.validateAndInitiateOrder(
-//                        order, restaurant, orderCreatedPaymentRequestMessagePublisher);
         OrderCreatedEvent orderCreatedEvent = orderDomainService.validateAndInitiateOrder(
                 order, restaurant);
         saveOrder(order);

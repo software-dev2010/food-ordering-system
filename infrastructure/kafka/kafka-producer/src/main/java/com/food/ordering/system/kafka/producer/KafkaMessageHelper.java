@@ -22,6 +22,7 @@ public class KafkaMessageHelper {
 
     public <T> T getOrderPaymentEventPayload(String payload, Class<T> outputType) {
         try {
+            log.info(" ---------->>>> payload = {}", payload);
             return objectMapper.readValue(payload, outputType);
         } catch (JsonProcessingException e) {
             log.error("Could not read {} object!", outputType.getName(), e);
@@ -29,13 +30,13 @@ public class KafkaMessageHelper {
         }
     }
 
-    public <T, U> ListenableFutureCallback<SendResult<String, T>>
-    getKafkaCallback(String responseTopicName,
-                     T avroModel,
-                     U outboxMessage,
-                     BiConsumer<U, OutboxStatus> outboxCallback,
-                     String orderId,
-                     String avroModelName) {
+    public <T, U> ListenableFutureCallback<SendResult<String, T>> getKafkaCallback(
+            String responseTopicName,
+            T avroModel,
+            U outboxMessage,
+            BiConsumer<U, OutboxStatus> outboxCallback,
+            String orderId,
+            String avroModelName) {
         return new ListenableFutureCallback<>() {
             @Override
             public void onFailure(Throwable ex) {

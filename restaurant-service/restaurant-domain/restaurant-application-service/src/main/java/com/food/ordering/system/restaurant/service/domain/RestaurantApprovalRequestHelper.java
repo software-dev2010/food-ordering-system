@@ -1,12 +1,14 @@
 package com.food.ordering.system.restaurant.service.domain;
 
+import com.food.ordering.system.outbox.OutboxStatus;
 import com.food.ordering.system.restaurant.service.domain.dto.RestaurantApprovalRequest;
 import com.food.ordering.system.restaurant.service.domain.entity.Restaurant;
 import com.food.ordering.system.restaurant.service.domain.event.OrderApprovalEvent;
 import com.food.ordering.system.restaurant.service.domain.exception.RestaurantNotFoundException;
 import com.food.ordering.system.restaurant.service.domain.mapper.RestaurantDataMapper;
-import com.food.ordering.system.restaurant.service.domain.ports.output.message.publisher.OrderApprovedMessagePublisher;
-import com.food.ordering.system.restaurant.service.domain.ports.output.message.publisher.OrderRejectedMessagePublisher;
+import com.food.ordering.system.restaurant.service.domain.outbox.model.OrderOutboxMessage;
+import com.food.ordering.system.restaurant.service.domain.outbox.scheduler.OrderOutboxHelper;
+import com.food.ordering.system.restaurant.service.domain.ports.output.message.publisher.RestaurantApprovalResponseMessagePublisher;
 import com.food.ordering.system.restaurant.service.domain.ports.output.repository.OrderApprovalRepository;
 import com.food.ordering.system.restaurant.service.domain.ports.output.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -25,11 +28,18 @@ public class RestaurantApprovalRequestHelper {
     private final RestaurantDomainService restaurantDomainService;
     private final RestaurantDataMapper restaurantDataMapper;
     private final RestaurantRepository restaurantRepository;
-    private final OrderApprovalRepository orderApprovalRepository;;
+    private final OrderApprovalRepository orderApprovalRepository;
+    private final OrderOutboxHelper orderOutboxHelper;
+    private final RestaurantApprovalResponseMessagePublisher restaurantApprovalResponseMessagePublisher;
 
     @Transactional
-    public OrderApprovalEvent persistOrderApproval(
+    public void persistOrderApproval(
             RestaurantApprovalRequest restaurantApprovalRequest) {
+        if (publishIfOutboxMessageProcessed(restaurantApprovalRequest)) {
+            log.info("An outbox message with saga id: {} already saved to database!",
+                    restaurantApprovalRequest.getSagaId());
+            return;
+        }
 
         log.info("Processing restaurant approval for order id: {}",
                 restaurantApprovalRequest.getOrderId());
@@ -41,7 +51,11 @@ public class RestaurantApprovalRequestHelper {
                         restaurant, failureMessages);
 
         orderApprovalRepository.save(restaurant.getOrderApproval());
-        return orderApprovalEvent;
+        orderOutboxHelper.saveOrderOutboxMessage(
+                restaurantDataMapper.orderApprovalEventToOrderEventPayload(orderApprovalEvent),
+                orderApprovalEvent.getOrderApproval().getApprovalStatus(),
+                OutboxStatus.STARTED,
+                UUID.fromString(restaurantApprovalRequest.getSagaId()));
     }
 
     private Restaurant findRestaurant(
@@ -70,5 +84,19 @@ public class RestaurantApprovalRequestHelper {
                 }));
 
         return restaurant;
+    }
+
+    private boolean publishIfOutboxMessageProcessed(
+            RestaurantApprovalRequest restaurantApprovalRequest) {
+        Optional<OrderOutboxMessage> orderOutboxMessage = orderOutboxHelper
+                .getCompletedOrderOutboxMessageBySagaIdAndOutboxStatus(
+                UUID.fromString(restaurantApprovalRequest.getSagaId()), OutboxStatus.COMPLETED);
+
+        if (orderOutboxMessage.isPresent()) {
+            restaurantApprovalResponseMessagePublisher.publish(orderOutboxMessage.get(),
+                    orderOutboxHelper::updateOutboxStatus);
+            return true;
+        }
+        return false;
     }
 }

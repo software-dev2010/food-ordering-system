@@ -1,0 +1,12 @@
+com\food\ordering\system\restaurant\service\dataaccess\mapper\RestaurantDataAccessMapper.class
+com\food\ordering\system\restaurant\service\dataaccess\adapter\OrderApprovalRepositoryImpl.class
+com\food\ordering\system\restaurant\service\dataaccess\outbox\repository\OrderOutboxJpaRepository.class
+com\food\ordering\system\restaurant\service\dataaccess\entity\OrderApprovalEntity.class
+com\food\ordering\system\restaurant\service\dataaccess\outbox\entity\OrderOutboxEntity.class
+com\food\ordering\system\restaurant\service\dataaccess\adapter\RestaurantRepositoryImpl.class
+com\food\ordering\system\restaurant\service\dataaccess\outbox\exception\OrderOutboxNotFoundException.class
+com\food\ordering\system\restaurant\service\dataaccess\entity\OrderApprovalEntity$OrderApprovalEntityBuilder.class
+com\food\ordering\system\restaurant\service\dataaccess\outbox\adapter\OrderOutboxRepositoryImpl.class
+com\food\ordering\system\restaurant\service\dataaccess\outbox\entity\OrderOutboxEntity$OrderOutboxEntityBuilder.class
+com\food\ordering\system\restaurant\service\dataaccess\outbox\mapper\OrderOutboxDataAccessMapper.class
+com\food\ordering\system\restaurant\service\dataaccess\repository\OrderApprovalJpaRepository.class
